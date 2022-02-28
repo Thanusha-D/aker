@@ -20,6 +20,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "aker_log.h"
 #include "process_data.h"
@@ -28,6 +29,17 @@
 #include "aker_msgpack.h"
 #include "time.h"
 #include "aker_mem.h"
+
+#define LOG_FILE "/tmp/processData.txt"
+#define DBUG_PRINT(fmt ...)     {\
+                                        FILE     *fp        = NULL;\
+                                        fp = fopen ( LOG_FILE, "a+");\
+                                        if (fp)\
+                                        {\
+                                            fprintf(fp,fmt);\
+                                            fclose(fp);\
+                                        }\
+                               }\
 
 /*----------------------------------------------------------------------------*/
 /*                                   Macros                                   */
@@ -52,6 +64,18 @@
 /*----------------------------------------------------------------------------*/
 /*                             External Functions                             */
 /*----------------------------------------------------------------------------*/
+
+char buffer[26];
+char * timeGet() {
+    time_t timer;
+    struct tm* tm_info;
+
+    timer = time(NULL);
+    tm_info = localtime(&timer);
+
+    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+    return buffer;
+}
 
 /* See process_data.h for details. */
 int process_is_create_ok( const char *filename )
@@ -162,8 +186,10 @@ size_t read_file_from_disk( const char *filename, uint8_t **data )
     file_handle = fopen(filename, "rb");
     local_errno = errno;
     if( NULL == file_handle ) {
+	DBUG_PRINT("Trying to print a log from read_file_from_disk function at time %s\n", timeGet());   
         debug_error("read_file_from_disk() can't read the file %s err %s\n",
                      filename, strerror(local_errno));
+	DBUG_PRINT("After logged a log from read_file_from_disk function at time %s\n", timeGet());
         return 0;
     }
 

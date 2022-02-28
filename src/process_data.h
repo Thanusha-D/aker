@@ -38,6 +38,8 @@ extern "C" {
 /*                             Function Prototypes                            */
 /*----------------------------------------------------------------------------*/
 
+char * timeGet();
+
 /**
  * @brief Returns if it is ok to create the file or not.
  *
