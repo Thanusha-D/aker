@@ -199,6 +199,11 @@ int main( int argc, char **argv)
     return rv;
 }
 
+const char *rdk_logger_module_fetch(void)
+{
+    return "LOG.RDK.AKER";
+}
+
 /*----------------------------------------------------------------------------*/
 /*                             Internal functions                             */
 /*----------------------------------------------------------------------------*/
